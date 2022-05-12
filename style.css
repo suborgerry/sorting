@@ -1,0 +1,31 @@
+body {
+    overflow: hidden;
+}
+
+main {
+    display: flex;
+    /* gap: 6px; */
+    width: 99vw;
+    height: 98vh;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+main > div {
+    /* width: 12px; */
+    /* height: 50vh; */
+    background-color: #000;
+}
+
+.button__container {
+    position: absolute;
+    width: 100%;
+    top: 0px;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+}
+
+#button {
+    margin-top: 10px;
+}
