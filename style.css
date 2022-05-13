@@ -24,8 +24,10 @@ main > div {
     background-color: #fff;
     display: flex;
     justify-content: center;
+    padding-top: 10px;
+    gap: 20px;
 }
 
-#button {
-    margin-top: 10px;
+.button__container button {
+    padding: 10px 30px ;
 }

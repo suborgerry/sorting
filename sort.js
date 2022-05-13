@@ -1,35 +1,49 @@
-const dataArrayRandom = [80, 469, 128, 478, 143, 338, 436, 233, 135, 357, 364, 481, 427, 391, 16, 120, 458, 28, 306, 496, 221, 390, 268, 70, 27, 259, 250, 183, 380, 74, 78, 110, 474, 389, 285, 349, 39, 287, 74, 480, 0, 297, 313, 75, 294, 457, 175, 242, 426, 197, 98, 106, 414, 32, 2, 235, 268, 174, 460, 98, 349, 488, 453, 278, 246, 293, 60, 392, 403, 13, 211, 200, 140, 241, 116, 309, 50, 24, 149, 319, 119, 320, 115, 138, 82, 360, 376, 349, 50, 497, 171, 442, 354, 60, 329, 148, 294, 185, 53, 410];
+const dataArrayRandom = [78,19,13,99,36,72,67,97,22,40,76,35,91,87,53,14,11,0,25,47,75,46,4,28,48,39,64,50,80,65,10,37,8,69,77,42,26,68,86,38,27,43,49,55,54,74,32,30,15,96,41,82,44,52,93,6,3,5,95,20,33,31,70,7,34,51,56,88,58,60,63,79,81,18,16,73,66,71,84,61,21,12,9,94,24,45,57,17,85,83,89,2,1,92,90,98,23,62,59,29];
 const main = document.querySelector('#main');
 const blocksArray = [];
-const btn = document.querySelector('#button');
+const btnsContainer = document.querySelector('#btnsContainer');
 
-const audio = document.createElement('audio');
-audio.src = './media/mtcmbt.mp3';
-audio.volume = 0.2;
+const track = document.createElement('audio');
+const coinSound = document.createElement('audio');
+
+// Settings for music
+// One of settings in globalProcess function 
+coinSound.src = './media/coin.mp3';
+track.volume = 0.2;
+coinSound.volume = 0.2;
+
+function defineMusicSrc(target) {
+    target == undefined && console.error('Name of variable have mistakes.')
+    track.src = target;
+}
+
+// end settings for music
 
 function delay(delayTime) {
     return new Promise(resolve => setTimeout(resolve, delayTime));
 };
 
-async function createBlocks(arr) {
+async function buildBlocks(arr) {
 
     await delay(10);
 
-    arr.forEach(element => {
-        const block = document.createElement('div');
-        block.style.height = element + 'px';
-        block.style.width = window.innerWidth / arr.length + 'px';
-        blocksArray.push(block);
-    });
+    for (const [index, item] of dataArrayRandom.entries()) {
+        await (async (item)=> {
+            await delay(index);
+            
+            const block = document.createElement('div');
+            block.style.height = item + 'px';
+            block.style.width = window.innerWidth / arr.length + 'px';
+            blocksArray.push(block);
+            
+            main.append(block);
+        })(item);
+    };
+
+    console.log('Building blocks is completed');
 };
 
-async function renderBlocks(item) {
-    await delay(1);
-    
-    main.append(item);
-}
-
-async function sortMain() {
+async function sortBubbles() {
     await delay(10);
 
     const mainChildren = main.children;
@@ -38,12 +52,11 @@ async function sortMain() {
         let wasSwap = false;
 
         await (async(i) => {
-            await delay(10);
+            await delay(1); // speed of loop
             for (let j = 0, endJ = endI - i; j < endJ; j++) {
                 await (async() => {
-                    await delay(1);
-                    console.log(endJ);
-                    setTimeout(() => {
+                    await delay(10);  // speed of exchanging. Use j for slowly process
+                    // console.log(endJ); // looking to process
                         if(mainChildren[j]?.clientHeight < mainChildren[j+1]?.clientHeight) {
                             const mainChildrenFirst = mainChildren[j].clientHeight;
                             const mainChildrenSecond = mainChildren[j+1].clientHeight;
@@ -53,37 +66,31 @@ async function sortMain() {
 
                             wasSwap = true;
                         }
-                    }, 1 * (j + 1));
                 })(j);
             };
         })(i);
         if (!wasSwap) break;
     }
+    console.log('Sorting blocks is completed');
 }
 
-async function processArray() {
+async function globalProcess(target) {
 
-    audio.play();
+    coinSound.play();
 
-    await createBlocks(dataArrayRandom);
-    console.log('Create blocks completed');
+    defineMusicSrc(target.dataset.musicSrc);
 
-    for (const item of blocksArray) {
-        await renderBlocks(item, 1);
-    }
-    console.log('Render blocks completed');
+    track.play();
 
-    await sortMain();
-    console.log('Sorting blocks completed');
+    await buildBlocks(dataArrayRandom);
 
-    audio.pause();
+    //Choise sort method
+    target.id == 'bubbles' && await sortBubbles();
+
+    // End choising
+
+    track.pause();
+    coinSound.play();
 }
 
-btn.addEventListener('click', () => {    
-    setTimeout(() => {
-        processArray();
-    }, 600);
-})
-
-// mainChildren[j-1].style.backgroundColor = "#000";
-// mainChildren[j].style.backgroundColor = "#a103fc";
+btnsContainer.addEventListener('click', evt => globalProcess(evt.target));
