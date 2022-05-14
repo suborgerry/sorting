@@ -12,18 +12,18 @@ coinSound.src = './media/coin.mp3';
 track.volume = 0.2;
 coinSound.volume = 0.2;
 
-function defineMusicSrc(target) {
+const defineMusicSrc = (target) => {
     target == undefined && console.error('Name of variable have mistakes.')
     track.src = target;
-}
+};
 
 // end settings for music
 
-function delay(delayTime) {
+const delay = (delayTime) => {
     return new Promise(resolve => setTimeout(resolve, delayTime));
 };
 
-async function buildBlocks(arr) {
+const buildBlocks = async (arr) => {
 
     await delay(10);
 
@@ -43,7 +43,7 @@ async function buildBlocks(arr) {
     console.log('Building blocks is completed');
 };
 
-async function sortBubbles() {
+const sortBubbles = async () => {
     await delay(10);
 
     const mainChildren = main.children;
@@ -72,13 +72,31 @@ async function sortBubbles() {
         if (!wasSwap) break;
     }
     console.log('Sorting blocks is completed');
-}
+};
 
-async function globalProcess(target) {
+const sortSelection = async () => {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        let min = i;
+        for (let j = i + 1; j < len; j++) {
+            if (arr[min] > arr[j]) {
+                min = j;
+            }
+        }
+        if (min !== i) {
+            let tmp = arr[i];
+            arr[i] = arr[min];
+            arr[min] = tmp;
+        }
+    }
+    return arr;
+};
+
+const globalProcess = async (target) => {
 
     coinSound.play();
 
-    defineMusicSrc(target.dataset.musicSrc);
+    // defineMusicSrc(target.dataset.musicSrc);
 
     track.play();
 
