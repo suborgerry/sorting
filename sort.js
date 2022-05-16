@@ -8,6 +8,7 @@ const coinSound = document.createElement('audio');
 
 // Settings for music
 // One of settings in globalProcess function 
+
 coinSound.src = './media/coin.mp3';
 track.volume = 0.2;
 coinSound.volume = 0.2;
@@ -24,14 +25,13 @@ const delay = (delayTime) => {
 };
 
 const buildBlocks = async (arr) => {
-
     await delay(10);
 
     for (const [index, item] of dataArrayRandom.entries()) {
         await (async (item)=> {
             await delay(index);
             
-            const block = document.createElement('div');
+            let block = document.createElement('div');
             block.style.height = item + 'px';
             block.style.width = window.innerWidth / arr.length + 'px';
             blocksArray.push(block);
@@ -46,7 +46,7 @@ const buildBlocks = async (arr) => {
 const sortBubbles = async () => {
     await delay(10);
 
-    const mainChildren = main.children;
+    let mainChildren = main.children;
 
     for (i = 0, endI = mainChildren.length - 1; i < endI; i++) {
         let wasSwap = false;
@@ -58,8 +58,8 @@ const sortBubbles = async () => {
                     await delay(10);  // speed of exchanging. Use j for slowly process
                     // console.log(endJ); // looking to process
                         if(mainChildren[j]?.clientHeight < mainChildren[j+1]?.clientHeight) {
-                            const mainChildrenFirst = mainChildren[j].clientHeight;
-                            const mainChildrenSecond = mainChildren[j+1].clientHeight;
+                            let mainChildrenFirst = mainChildren[j].clientHeight;
+                            let mainChildrenSecond = mainChildren[j+1].clientHeight;
                     
                             mainChildren[j].style.height = mainChildrenSecond + 'px';
                             mainChildren[j+1].style.height = mainChildrenFirst + 'px';
@@ -74,7 +74,7 @@ const sortBubbles = async () => {
     console.log('Sorting blocks is completed');
 };
 
-const sortSelection = async () => {
+const sortSelection = (arr) => {
     let len = arr.length;
     for (let i = 0; i < len; i++) {
         let min = i;
@@ -104,11 +104,12 @@ const globalProcess = async (target) => {
 
     //Choise sort method
     target.id == 'bubbles' && await sortBubbles();
+    target.id == 'selection' && await sortSelection();
 
     // End choising
 
     track.pause();
     coinSound.play();
-}
+};
 
 btnsContainer.addEventListener('click', evt => globalProcess(evt.target));
