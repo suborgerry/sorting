@@ -24,8 +24,13 @@ const delay = (delayTime) => {
     return new Promise(resolve => setTimeout(resolve, delayTime));
 };
 
-const buildBlocks = async (arr) => {
+const buildBlocks = async (arr, identificator) => {
     await delay(10);
+
+    const sortContainer = document.createElement('div');
+    sortContainer.classList.add('container');
+    sortContainer.id = identificator;
+    main.append(sortContainer);
 
     for (const [index, item] of dataArrayRandom.entries()) {
         await (async (item)=> {
@@ -36,29 +41,32 @@ const buildBlocks = async (arr) => {
             block.style.width = window.innerWidth / arr.length + 'px';
             blocksArray.push(block);
             
-            main.append(block);
+            sortContainer.append(block);
         })(item);
     };
 
     console.log('Building blocks is completed');
 };
 
-const sortBubbles = async (arr) => {    
-    await delay(0);
+const sortBubbles = async (identificator) => {
+    await delay(10);
+
+    await buildBlocks(dataArrayRandom, identificator);
 
     const timeStart = Date.now();
-    const childrens = arr.children;
+    const childrens = document.getElementById(identificator).children;
 
     for (i = 0, endI = childrens.length - 1; i < endI; i++) {
         let wasSwap = false;
 
         await (async () => {
+            
             // speed of loop
-            await delay(0); 
+            await delay(1); 
             for (let j = 0, endJ = endI - i; j < endJ; j++) {
                 await (async () => {
                     // speed of exchanging. Use j for slowly process
-                    await delay(0);
+                    await delay(1);
                         if(childrens[j]?.clientHeight < childrens[j+1]?.clientHeight) {
                             let childrensFirst = childrens[j].clientHeight;
                             let childrensSecond = childrens[j+1].clientHeight;
@@ -78,22 +86,24 @@ const sortBubbles = async (arr) => {
     console.log('Sorting bubbles is completed with ' + timeFinish + 's.');
 };
 
-const sortSelection = async (arr) => {
-    await delay(0);
+const sortSelection = async (identificator) => {
+    await delay(10);
+
+    await buildBlocks(dataArrayRandom, identificator);
 
     const timeStart = new Date().getTime();
-    const childrens = arr.children;
+    const childrens = document.getElementById(identificator).children;
     const len = childrens.length;
     
     for (let i = 0, l = len, k = l - 1; i < k; i++) {
         await (async () => {
-            await delay(0);
+            await delay(1);
 
             let indexMin = i;
 
             for (let j = i + 1; j < l; j++) {
                 await (async () => {
-                    await delay(0);
+                    await delay(1);
 
                     if (childrens[indexMin].clientHeight > childrens[j].clientHeight) {
                         indexMin = j;
@@ -118,20 +128,22 @@ const sortSelection = async (arr) => {
     console.log('Sorting select is completed with ' + timeFinish + 's.');
 };
 
+const togetherSorting = async () => {
+    return Promise.all([sortBubbles('bubbles'), sortSelection('selection')]);
+}
+
 const globalProcess = async (target) => {
+    await delay(10);
 
     coinSound.play();
 
-    // defineMusicSrc(target.dataset.musicSrc);
-
-    // track.play();
-
-    await buildBlocks(dataArrayRandom);
+    defineMusicSrc(target.dataset.musicSrc);
+    track.play();
 
     //Choise sort method
-    target.id == 'bubbles' && await sortBubbles(main);
-    target.id == 'selection' && await sortSelection(main);
-
+    target.dataset.id == 'bubbles' && await sortBubbles(target.dataset.id);
+    target.dataset.id == 'selection' && await sortSelection(target.dataset.id);
+    target.dataset.id == 'together' && await togetherSorting();
     // End choising
 
     track.pause();

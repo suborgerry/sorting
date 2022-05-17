@@ -1,20 +1,31 @@
 body {
     overflow: hidden;
+    height: 98vh;
+    width: 99vw;
 }
 
 main {
+    height: 100%;
+    width: 100%;
     display: flex;
-    /* gap: 6px; */
-    width: 99vw;
-    height: 98vh;
-    align-items: flex-end;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 10px;
 }
 
-main > div {
-    /* width: 12px; */
-    /* height: 50vh; */
+.container {
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    /* justify-content: center; */
+}
+
+.container > div {
     background-color: #000;
+}
+
+.container#selection {
+    flex-direction: row-reverse;
 }
 
 .button__container {
